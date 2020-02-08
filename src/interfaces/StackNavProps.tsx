@@ -3,7 +3,7 @@ import TodoContainer from '../containers/TodoContainer';
 
 // Type for storing the container to be shared
 export interface StackNavProps {
-    navigation: NavigationStackProp,
+    navigation: NavigationStackProp<any>,
     todoContainer: TodoContainer
 }
 //   type StackNavProps = {

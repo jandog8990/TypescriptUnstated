@@ -33,7 +33,7 @@ import Sentence from './src/components/Sentence';
 import WordList from './src/components/WordList';
 
 import { createStackNavigator /*, NavigationStackScreenProps*/ } from 'react-navigation-stack';
-import { createAppContainer, NavigationScreenProp /*, NavigationState*/ } from 'react-navigation';
+import { createAppContainer, NavigationScreenProp, NavigationState } from 'react-navigation';
 // import NavigationStackProp from 'react-navigation-stack';
 // import { NavigationScreenProp, NavigationState } from 'react-navigation';
 
@@ -50,100 +50,65 @@ declare var global: {HermesInternal: null | {}};
 
 import TodoContainer from './src/containers/TodoContainer';
 import { TodoProps } from './src/interfaces/TodoProps';
-import { StackNavProps } from './src/interfaces/StackNavProps';
-
+// import { StackNavProps } from './src/interfaces/StackNavProps';
+import { NavProps } from './src/interfaces/NavProps';
+// import { Todo } from 'src/interfaces/Todo';
 
 const todoContainer = new TodoContainer();
 
-/*
-type Navigation = NavigationStackScreenProps<NavigationState>;
-type NavProps = {
-  navigation: NavigationStackScreenProps<NavigationState>,
-  todoProps: TodoProps
-}
-*/
-
-export default class MainApp extends Component<NavProps, any> {
-  constructor(props:NavProps) {
+// export default class App extends Component<NavProps, TodoProps> {
+export default class App extends Component {
+  constructor(props: any) {
     super(props);
 
-    this.props.
+    console.log("Nav props constructor:");
+    console.log(this.props);
+    console.log("\n");                                                                             
+    // this.setTodoProps.bind(this);
   }
 
-  render() {
-    return(
-      <AppContainer navigation={this.props.navigation} todoProps={this.props.todoProps} />
-    )
-  }
-}
-
-const AppContainer = ({ navigation, todoProps}: NavProps) => (
-// export default class App extends Component<NavProps> {
-// export default class App extends Component {
-  // render() {
-  //   return (
+  render = () => {
+    // const { navigation } = this.props;
+    return (
     <Provider inject={[todoContainer]}>
       <Subscribe to={[TodoContainer]}>
         {(todoContainer: TodoContainer) => (
-          <StackNav navigation={navigation} {...todoProps.todoContainer=todoContainer} todoProps={todoProps}  />
+          // <StackNav navigation={navigation} todoProps={this.setTodoProps(todoProps, todoContainer)}/>
+          <StackNav {...this.props} todoContainer={todoContainer}/>
         )} 
       </Subscribe>
     </Provider>
-
-  //   );
-  // }
-
-  // Provider component stores container instances and allows children to 
-  // subscribe to the instances. Top level will subscribe to container
-  /*
-  render() {
-    return (
-      <Provider inject={[todoContainer]}>
-        <AddTodo/>
-        <Todos/>
-      </Provider>
     );
   }
-  */
-
-  /*
-  render() {
-    return <AppContainer/>;
-  }
-  */
-
-  // <WordList/>
-  /*
-  render() {
-    return (
-      <Provider>
-      <>
-        <StatusBar barStyle="dark-content" />
-
-            <Sentence/>
-
-            <Text style={{marginTop: 20}} />
-
-      </>
-      </Provider>
-    );
-  }
-  */
-)
-// }
-// export default App;
+}
 
 // Create the main stack navigator for the app using Class Component format
 // export class StackNav extends Component<TodoProps, any> {
-export class StackNav extends Component<NavProps, any> {
-  
+// export class StackNav extends Component<NavProps> {
+export class StackNav extends Component<TodoProps, any> {
+  constructor(props: TodoProps) {
+    super(props);
+  }
+
   stackNav = createStackNavigator({
     AddTodo: {
-      screen: (props: NavProps) => <AddTodo {...props} todoContainer={props.todoProps.todoContainer} />
+      screen: (props: NavProps) => <AddTodo {...props} todoContainer={this.props.todoContainer} />
     },
     Todos: {
-      screen: (props: NavProps) => <Todos {...props} todoContainer={props.todoProps.todoContainer} />
-
+      screen: (props: NavProps) => <Todos {...props} todoContainer={this.props.todoContainer} />
+  
+    }
+  }, {
+    initialRouteParams: AddTodo,
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: 'white',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        color: 'black',
+        fontWeight: 'bold',
+      }
     }
   });
   AppContainer = createAppContainer(this.stackNav);
